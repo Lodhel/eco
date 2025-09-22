@@ -19,8 +19,6 @@ migrations
 
 *.jpg
 
-src/.env
-
 nohup.out
 builds/
 app/static/
