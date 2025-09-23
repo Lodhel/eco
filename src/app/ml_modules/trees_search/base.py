@@ -8,8 +8,9 @@ from PIL import Image
 class TreesSearcher:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    def run(self, image, model_path: str = "наш.pt"):
-        model = self.load_model(model_path, )
+    def run(self, image):
+        model_path = self._model_path()
+        model = self.load_model(model_path)
         results, preds = self.predict(image, model, conf_thres=0.25)
         return preds
 
@@ -64,3 +65,7 @@ class TreesSearcher:
             image_bytes_list.append(img_byte_arr.getvalue())
 
         return image_bytes_list
+
+    @staticmethod
+    def _model_path() -> Path:
+        return Path(__file__).resolve().parent / "trees.pt"
