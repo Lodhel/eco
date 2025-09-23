@@ -53,7 +53,7 @@ class PlantRouter(BaseRouter):
             await f.write(content)
 
         try:
-            result = self.trees_searcher.run(tmp_path)
+            result = self.trees_searcher.run(content)
             return self.get_data({'result': result})
         finally:
             await aiofiles.os.remove(tmp_path)
