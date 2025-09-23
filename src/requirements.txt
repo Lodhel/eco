@@ -17,3 +17,4 @@ passlib==1.7.4
 torch==2.8.0
 torchvision==0.23.0
 efficientnet-pytorch==0.7.1
+ultralytics==8.3.203
