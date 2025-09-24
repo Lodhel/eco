@@ -22,7 +22,7 @@ class Order(Base):
             'id': self.id,
             'image_path': self.image_path,
             'title': self.title,
-            'created_at': self.created_at,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
             'results': [detection_result.data for detection_result in self.detection_results],
         }
 
