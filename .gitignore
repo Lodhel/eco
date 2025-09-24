@@ -25,4 +25,4 @@ builds/
 app/static/
 mos_data.json
 base_data.json
-app/images/
+src/images/

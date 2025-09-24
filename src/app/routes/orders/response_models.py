@@ -9,7 +9,7 @@ order_responses = {
                         "value": {
                             "data": {
                                 "id": 1,
-                                "image_path": "app/images/sample.jpg",
+                                "image_path": "sample.jpg",
                                 "title": "Заявка на определение растения",
                                 "created_at": "2023-09-25T12:00:00",
                                 "results": [

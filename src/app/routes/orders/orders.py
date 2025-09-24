@@ -49,7 +49,7 @@ class PlantRouter(BaseRouter):
         content = await file.read()
         suffix = os.path.splitext(file.filename)[1]
 
-        save_path = os.path.join("app/images", file.filename)
+        save_path = os.path.join("src/images", file.filename)
         tmp = tempfile.NamedTemporaryFile(delete=False, suffix=suffix)
         tmp.close()
 

@@ -8,7 +8,7 @@ from src.app.routes.orders.base import BaseRouter
 image_router = APIRouter()
 image_tags = ["Получение изображения"]
 
-UPLOAD_DIRECTORY = "app/images"
+UPLOAD_DIRECTORY = "src/images"
 
 
 @cbv(image_router)
