@@ -54,17 +54,18 @@ class PlantRouter(BaseRouter):
         tmp.close()
 
         try:
-            async with AsyncSession(self.engine, autoflush=False, expire_on_commit=False) as session:
-                result: dict = self.trees_searcher.run(content)
-                save_path = await self.save_annotated_image(result['image'], tmp_path)
-
-                order = self.create_order(title, save_path)
-                session.add(order)
-                await session.flush()
-                await self.create_detection_results(session, order, result['preds'])
-                await session.commit()
-
-                data: dict = await self.get_data_by_response(session, order)
-                return self.get_data(data)
+            result: dict = self.trees_searcher.run(content)
         finally:
             await aiofiles.os.remove(tmp_path)
+
+        async with AsyncSession(self.engine, autoflush=False, expire_on_commit=False) as session:
+            save_path = await self.save_annotated_image(result['image'], tmp_path)
+
+            order = self.create_order(title, save_path)
+            session.add(order)
+            await session.flush()
+            await self.create_detection_results(session, order, result['preds'])
+            await session.commit()
+
+            data: dict = await self.get_data_by_response(session, order)
+            return self.get_data(data)
