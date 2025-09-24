@@ -3,7 +3,7 @@ import os
 import uuid
 
 import aiofiles
-from sqlalchemy import select
+from sqlalchemy import select, asc, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -67,3 +67,11 @@ class BaseRouter(
         )
         order = result.scalar_one_or_none()
         return order.data
+
+    @staticmethod
+    def set_order_by(order_by, select_rel):
+        order_map = {
+            'id_asc': asc(Order.id),
+            'id_desc': desc(Order.id)
+        }
+        return select_rel.order_by(order_map.get(order_by)) if order_by in order_map else select_rel

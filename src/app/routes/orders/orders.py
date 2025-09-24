@@ -4,19 +4,21 @@ import tempfile
 import aiofiles.os
 from fastapi import APIRouter, Depends, UploadFile, File, Form
 from fastapi_utils.cbv import cbv
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 from starlette.responses import Response
 
+from src.app.models import Order
 from src.app.routes.orders.base import BaseRouter
 
 from src.app.ml_modules.trees_search.base import TreesSearcher
-from src.app.routes.general_models import GeneralHeadersModel
+from src.app.routes.general_models import GeneralHeadersModel, GeneralParams
 from src.app.routes.orders.models import OrderResponse
 from src.app.routes.orders.response_models import order_responses
 
 order_router = APIRouter()
-order_tags = ["Создание заявки"]
+order_tags = ["Заявки"]
 
 
 @cbv(order_router)
@@ -26,13 +28,36 @@ class PlantRouter(BaseRouter):
         super(PlantRouter, self).__init__()
         self.trees_searcher = TreesSearcher()
 
+    @order_router.get(
+        "/orders/",
+        name="orders",
+        summary="Список заявок",
+        response_model=OrderResponse,
+        responses=order_responses,
+        description="GET-операция для получения всех заявок",
+        tags=order_tags
+    )
+    async def get(
+        self,
+        request: Request,
+        response: Response,
+        params: GeneralParams = Depends(),
+        headers: GeneralHeadersModel = Depends()
+    ):
+        if not await self.auth_service_client(headers.authorization_token):
+            return self.make_response_by_auth_error()
+
+        async with AsyncSession(self.engine, autoflush=False, expire_on_commit=False) as session:
+            select_rel = self.set_order_by(params.order_by, select(Order))
+            return await self.get_response_by_select_rel(session, params, select_rel)
+
     @order_router.post(
         "/orders/",
         name="orders",
         summary="Определить растение по изображению",
         response_model=OrderResponse,
         responses=order_responses,
-        description="POST-операция для определения растений по изображений",
+        description="POST-операция на создание заявки",
         tags=order_tags
     )
     async def post(

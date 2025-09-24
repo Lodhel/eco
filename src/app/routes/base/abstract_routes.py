@@ -8,9 +8,7 @@ class AbstractBaseRouter:
         cls,
         session,
         params,
-        select_rel,
-        model_class,
-        filter_clause=None
+        select_rel
     ):
         pass
 

@@ -14,9 +14,7 @@ class GeneralBaseRouter(AbstractBaseRouter, ABC):
         cls,
         session: AsyncSession,
         params,
-        select_rel,
-        model_class,
-        filter_clause=None
+        select_rel
     ):
         instances = await cls.get_instances_by_response(session, params, select_rel)
         data: list = [
@@ -26,9 +24,17 @@ class GeneralBaseRouter(AbstractBaseRouter, ABC):
             'data': data,
             'meta': {
                 'total': len(data),
-                # 'counts': await cls.get_instances_count(session, model_class, filter_clause)
+                'counts': await cls.get_count_by_select_rel(session, select_rel)
             }
         })
+
+    @staticmethod
+    async def get_count_by_select_rel(session: AsyncSession, select_rel) -> int:
+        result = await session.execute(
+            select(func.count()).select_from(select_rel.subquery())
+        )
+        count = result.scalar_one()
+        return count
 
     @staticmethod
     async def get_instances_by_response(session: AsyncSession, params, select_rel):
