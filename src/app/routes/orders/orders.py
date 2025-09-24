@@ -49,21 +49,22 @@ class PlantRouter(BaseRouter):
         content = await file.read()
         suffix = os.path.splitext(file.filename)[1]
 
-        save_path = os.path.join("src/images", file.filename)
         tmp = tempfile.NamedTemporaryFile(delete=False, suffix=suffix)
+        tmp_path = tmp.name
         tmp.close()
 
-        async with aiofiles.open(save_path, "wb") as f:
-            await f.write(content)
+        try:
+            async with AsyncSession(self.engine, autoflush=False, expire_on_commit=False) as session:
+                result: dict = self.trees_searcher.run(content)
+                save_path = await self.save_annotated_image(content, result['image'])
 
-        async with AsyncSession(self.engine, autoflush=False, expire_on_commit=False) as session:
-            order = self.create_order(title, save_path)
-            session.add(order)
-            await session.flush()
+                order = self.create_order(title, save_path)
+                session.add(order)
+                await session.flush()
+                await self.create_detection_results(session, order, result['preds'])
+                await session.commit()
 
-            result = self.trees_searcher.run(content)
-            await self.create_detection_results(session, order, result)
-            await session.commit()
-
-            data: dict = await self.get_data_by_response(session, order)
-            return self.get_data(data)
+                data: dict = await self.get_data_by_response(session, order)
+                return self.get_data(data)
+        finally:
+            await aiofiles.os.remove(tmp_path)

@@ -1,6 +1,8 @@
 import datetime
+import os
 import uuid
 
+import aiofiles
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -42,6 +44,14 @@ class BaseRouter(
 
         session.add_all(results)
         await session.flush()
+
+    @staticmethod
+    async def save_annotated_image(content, filename):
+        save_path = os.path.join("app/images", filename)
+        async with aiofiles.open(save_path, "wb") as f:
+            await f.write(content)
+
+        return filename
 
     @staticmethod
     async def get_data_by_response(session: AsyncSession, order: Order) -> dict:

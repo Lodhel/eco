@@ -3,6 +3,8 @@ from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
+from src.app.config import BASE_URL
+
 Base = declarative_base()
 
 
@@ -20,7 +22,7 @@ class Order(Base):
     def data(self):
         return {
             'id': self.id,
-            'image_path': self.image_path,
+            'image_path': f'{BASE_URL}{self.image_path}/',
             'title': self.title,
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'results': [detection_result.data for detection_result in self.detection_results],
