@@ -9,7 +9,7 @@ from PIL import Image
 class TreesSearcher:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    def run(self, image):
+    def run(self, image) -> list:
         model_path = self._model_path()
         model = self.load_model(model_path)
         results, preds = self.predict(image, model, conf_thres=0.25)
