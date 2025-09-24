@@ -1,6 +1,7 @@
 import os
 from fastapi import APIRouter, Path, HTTPException
 from fastapi_utils.cbv import cbv
+from loguru import logger
 from starlette.requests import Request
 from starlette.responses import Response
 from starlette.responses import FileResponse
@@ -17,7 +18,7 @@ UPLOAD_DIRECTORY = "src/images"
 class ImageRouter(BaseRouter):
 
     @image_router.get(
-        "/images/{filename}",
+        "/images/{filename}/",
         name="get_image",
         summary="Получить изображение",
         tags=image_tags,
@@ -35,6 +36,7 @@ class ImageRouter(BaseRouter):
         )
     ):
         file_path = os.path.join(UPLOAD_DIRECTORY, filename)
+        logger.info(filename)
 
         if not os.path.exists(file_path):
             raise HTTPException(status_code=404, detail="File not found")
