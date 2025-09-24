@@ -55,19 +55,18 @@ class TreesSearcher:
 
     @staticmethod
     def get_images_from_results(results):
-        image_bytes_list = []
+        if len(results) == 0:
+            return []
 
-        for r in results:
-            im_array = r.plot()
-            im = Image.fromarray(im_array[..., ::-1])
+        r = results[0]
+        im_array = r.plot()
+        im = Image.fromarray(im_array[..., ::-1])
 
-            img_byte_arr = io.BytesIO()
-            im.save(img_byte_arr, format='PNG')
-            img_byte_arr.seek(0)
+        img_byte_arr = io.BytesIO()
+        im.save(img_byte_arr, format='PNG')
+        img_byte_arr.seek(0)
 
-            image_bytes_list.append(img_byte_arr.getvalue())
-
-        return image_bytes_list
+        return img_byte_arr.getvalue()
 
     @staticmethod
     def _model_path() -> Path:
