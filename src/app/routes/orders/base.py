@@ -54,6 +54,10 @@ class BaseRouter(
 
         return filename
 
+    @classmethod
+    async def get_data_by_response_created(cls, session: AsyncSession, order: Order):
+        return await cls.get_data_by_response(session, order)
+
     @staticmethod
     async def get_data_by_response(session: AsyncSession, order: Order) -> dict:
         result = await session.execute(
