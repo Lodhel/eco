@@ -48,7 +48,7 @@ class BaseRouter(
     @staticmethod
     async def save_annotated_image(content, filename):
         filename = filename.split('/')[-1]
-        save_path = os.path.join("app/images", filename)
+        save_path = os.path.join("src/images", filename)
         async with aiofiles.open(save_path, "wb") as f:
             await f.write(content)
 
