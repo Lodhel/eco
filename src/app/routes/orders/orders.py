@@ -56,7 +56,7 @@ class PlantRouter(BaseRouter):
         try:
             async with AsyncSession(self.engine, autoflush=False, expire_on_commit=False) as session:
                 result: dict = self.trees_searcher.run(content)
-                save_path = await self.save_annotated_image(content, result['image'])
+                save_path = await self.save_annotated_image(result['image'], tmp_path)
 
                 order = self.create_order(title, save_path)
                 session.add(order)
