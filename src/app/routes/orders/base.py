@@ -34,9 +34,9 @@ class BaseRouter(
             DetectionResult(
                 order_id=order.id,
                 label=_['label'],
-                confidence=_['confidence'],
-                bbox_norm=_['bbox_norm'],
-                bbox_abs=_['bbox_abs']
+                confidence=str(_['confidence']),
+                bbox_norm=str(_['bbox_norm']),
+                bbox_abs=str(_['bbox_abs'])
             ) for _ in data
         ]
 
