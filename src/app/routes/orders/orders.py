@@ -58,6 +58,9 @@ class PlantRouter(BaseRouter):
 
         async with AsyncSession(self.engine, autoflush=False, expire_on_commit=False) as session:
             order = self.create_order(title, save_path)
+            session.add(order)
+            await session.flush()
+
             result = self.trees_searcher.run(content)
             await self.create_detection_results(session, order, result)
             await session.commit()

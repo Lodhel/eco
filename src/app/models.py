@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, JSON, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -31,8 +32,18 @@ class DetectionResult(Base):
 
     id = Column(Integer, primary_key=True)
     order_id = Column(Integer, ForeignKey('orders.id'), nullable=False)
-
     label = Column(String, nullable=False)
-    data = Column(JSON, nullable=False)
+    confidence = Column(Float, nullable=False)
+    bbox_norm = Column(ARRAY(Float), nullable=False)
+    bbox_abs = Column(ARRAY(Float), nullable=False)
 
     order = relationship("Order", back_populates="detection_results")
+
+    @property
+    def data(self):
+        return {
+            'label': self.label,
+            'confidence': self.confidence,
+            'bbox_norm': self.bbox_norm,
+            'bbox_abs': self.bbox_abs
+        }
