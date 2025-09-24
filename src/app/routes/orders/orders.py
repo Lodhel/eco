@@ -2,7 +2,7 @@ import os
 import tempfile
 
 import aiofiles.os
-from fastapi import APIRouter, Depends, UploadFile, File, Form
+from fastapi import APIRouter, Depends, UploadFile, File, Form, Path
 from fastapi_utils.cbv import cbv
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -22,10 +22,10 @@ order_tags = ["Заявки"]
 
 
 @cbv(order_router)
-class PlantRouter(BaseRouter):
+class OrderRouter(BaseRouter):
 
     def __init__(self):
-        super(PlantRouter, self).__init__()
+        super(OrderRouter, self).__init__()
         self.trees_searcher = TreesSearcher()
 
     @order_router.get(
@@ -93,4 +93,40 @@ class PlantRouter(BaseRouter):
             await session.commit()
 
             data: dict = await self.get_data_by_response(session, order)
+            return self.get_data(data)
+
+
+@cbv(order_router)
+class PersonalOrderRouter(BaseRouter):
+
+    @order_router.get(
+        "/orders/{order_id}/",
+        name="get_order_by_id",
+        summary="Получить заявку по ID",
+        response_model=OrderResponse,
+        responses=order_responses,
+        description="GET-операция для получения с заявок по ID",
+        tags=order_tags
+    )
+    async def get(
+        self,
+        request: Request,
+        response: Response,
+        order_id: int = Path(
+            ...,
+            title="ID сайта",
+            description="ID сайта",
+            example="1"
+        ),
+        headers: GeneralHeadersModel = Depends()
+    ):
+        if not await self.auth_service_client(headers.authorization_token):
+            return self.make_response_by_auth_error()
+
+        async with AsyncSession(self.engine, autoflush=False, expire_on_commit=False) as session:
+            order = await self.get_instance_by_id(session, Order, order_id)
+            if not order:
+                return self.make_response_by_error_not_exists()
+
+            data: dict = await self.get_data_by_response_created(session, order)
             return self.get_data(data)
