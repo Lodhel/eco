@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime
+from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -31,7 +31,7 @@ class DetectionResult(Base):
     __tablename__ = 'detection_results'
 
     id = Column(Integer, primary_key=True)
-    order_id = Column(Integer, nullable=False)
+    order_id = Column(Integer, ForeignKey('orders.id'), nullable=False)
     label = Column(String, nullable=False)
     confidence = Column(Float, nullable=False)
     bbox_norm = Column(ARRAY(Float), nullable=False)
