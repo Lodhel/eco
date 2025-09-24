@@ -33,9 +33,9 @@ class DetectionResult(Base):
     id = Column(Integer, primary_key=True)
     order_id = Column(Integer, ForeignKey('orders.id'), nullable=False)
     label = Column(String, nullable=False)
-    confidence = Column(Float, nullable=False)
-    bbox_norm = Column(ARRAY(Float), nullable=False)
-    bbox_abs = Column(ARRAY(Float), nullable=False)
+    confidence = Column(String, nullable=False)
+    bbox_norm = Column(ARRAY(String), nullable=False)
+    bbox_abs = Column(ARRAY(String), nullable=False)
 
     order = relationship("Order", back_populates="detection_results")
 
