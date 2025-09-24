@@ -22,7 +22,7 @@ class Order(Base):
     def data(self):
         return {
             'id': self.id,
-            'image_path': f'{BASE_URL}images/{self.image_path}/',
+            'image_path': f'{BASE_URL}api/v1/images/{self.image_path}/',
             'title': self.title,
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'results': [detection_result.data for detection_result in self.detection_results],
