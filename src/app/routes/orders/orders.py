@@ -158,7 +158,7 @@ class PersonalOrderRouter(BaseRouter):
             if os.path.exists(file_path):
                 os.remove(file_path)
 
-            await session.execute(delete(order))
+            await session.execute(delete(Order).where(Order.id == order_id))
             await session.commit()
 
             return self.get_data({
