@@ -35,7 +35,8 @@ class BaseRouter(
                 3: 0
             }
         }
-        results = await session.execute(select(DetectionResult).where(DetectionResult.order_id == order_id))
+        stmt = await session.execute(select(DetectionResult).where(DetectionResult.order_id == order_id))
+        results = stmt.scalars().all()
         for result in results:
             analytics_data['total_plants'] += 1
             if result.label == 'дерево':
