@@ -36,8 +36,6 @@ class ImageRouter(BaseRouter):
         )
     ):
         file_path = os.path.join(UPLOAD_DIRECTORY, filename)
-        logger.info(filename)
-
         if not os.path.exists(file_path):
             raise HTTPException(status_code=404, detail="File not found")
 

@@ -4,12 +4,13 @@ import tempfile
 import aiofiles.os
 from fastapi import APIRouter, Depends, UploadFile, File, Form, Path
 from fastapi_utils.cbv import cbv
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 from starlette.responses import Response
 
 from src.app.models import Order
+from src.app.routes.images.images import UPLOAD_DIRECTORY
 from src.app.routes.orders.base import BaseRouter
 
 from src.app.ml_modules.trees_search.base import TreesSearcher
@@ -130,3 +131,37 @@ class PersonalOrderRouter(BaseRouter):
 
             data: dict = await self.get_data_by_response_created(session, order)
             return self.get_data(data)
+
+    @order_router.delete(
+        "/orders/{order_id}/",
+        name="delete_order",
+        summary="Удалить заявку по ID",
+        description="DELETE-операция для удаления заявки по ID",
+        tags=order_tags
+    )
+    async def delete(
+        self,
+        request: Request,
+        response: Response,
+        order_id: int = Path(..., title="ID заказа", description="ID заказа", example=1),
+        headers: GeneralHeadersModel = Depends()
+    ):
+        if not await self.auth_service_client(headers.authorization_token):
+            return self.make_response_by_auth_error()
+
+        async with AsyncSession(self.engine, autoflush=False, expire_on_commit=False) as session:
+            order = await self.get_instance_by_id(session, Order, order_id)
+            if not order:
+                return self.make_response_by_error_not_exists()
+
+            file_path = os.path.join(UPLOAD_DIRECTORY, order.image_path)
+            if os.path.exists(file_path):
+                os.remove(file_path)
+
+            await session.execute(delete(order))
+            await session.commit()
+
+            return self.get_data({
+                "success": True,
+                "message": "Заявка успешно удалён",
+            })
