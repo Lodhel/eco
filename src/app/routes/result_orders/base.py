@@ -50,6 +50,8 @@ class BaseRouter(
 
             analytics_data['condition_status'][result.status] += 1
 
+        return analytics_data
+
     @staticmethod
     async def get_plant_by_name(session: AsyncSession, name: str):
         try:
