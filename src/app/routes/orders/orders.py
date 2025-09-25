@@ -114,8 +114,8 @@ class PersonalOrderRouter(BaseRouter):
         response: Response,
         order_id: int = Path(
             ...,
-            title="ID сайта",
-            description="ID сайта",
+            title="ID заявки",
+            description="ID заявки",
             example="1"
         ),
         headers: GeneralHeadersModel = Depends()

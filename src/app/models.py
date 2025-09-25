@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Boolean
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -6,6 +6,32 @@ from sqlalchemy.orm import relationship
 from src.app.config import BASE_URL
 
 Base = declarative_base()
+
+
+class Plant(Base):
+    __tablename__ = 'plants'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    family = Column(String, nullable=False)
+    genus = Column(String, nullable=False)
+    growing_area = Column(String, nullable=False)
+    height = Column(String, nullable=True)
+    class_type = Column(String, nullable=True)
+    has_fruits = Column(Boolean, default=False)
+
+    @property
+    def data(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'family': self.family,
+            'genus': self.genus,
+            'growing_area': self.growing_area,
+            'height': self.height,
+            'class_type': self.class_type,
+            'has_fruits': self.has_fruits,
+        }
 
 
 class Order(Base):
@@ -35,17 +61,22 @@ class DetectionResult(Base):
     id = Column(Integer, primary_key=True)
     order_id = Column(Integer, ForeignKey('orders.id'), nullable=False)
     label = Column(String, nullable=False)
+    name_plant = Column(String, nullable=False, default='Неизвестный вид')
     confidence = Column(Float, nullable=False)
     bbox_norm = Column(ARRAY(Float), nullable=False)
     bbox_abs = Column(ARRAY(Float), nullable=False)
+    dry_branches_percentage = Column(Float, default=0.0)
 
     order = relationship("Order", back_populates="detection_results")
 
     @property
     def data(self):
         return {
+            'id': self.id,
             'label': self.label,
+            'name_plant': self.name_plant,
             'confidence': self.confidence,
             'bbox_norm': self.bbox_norm,
-            'bbox_abs': self.bbox_abs
+            'bbox_abs': self.bbox_abs,
+            'dry_branches_percentage': self.dry_branches_percentage,
         }
