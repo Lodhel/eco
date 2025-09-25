@@ -15,3 +15,15 @@ class PlantResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class AnalyticsData(BaseModel):
+    total_plants: int = Field(..., description="Общее количество растений")
+    total_trees: int = Field(..., description="Общее количество деревьев")
+    total_shrubs: int = Field(..., description="Общее количество кустарников")
+    shrub_types: dict = Field(..., description="Типы кустарников и их количество")
+    tree_types: dict = Field(..., description="Типы деревьев и их количество")
+    condition_status: dict = Field(..., description="Состояние растений(1 - хорошо/2 - удовлетварительно/3 - плохо)")
+
+    class Config:
+        orm_mode = True

@@ -24,16 +24,30 @@ result_orders_responses = {
                 }
             }
         }
-    },
-    400: {
-        "description": "Ошибка клиента",
+    }
+}
+result_order_responses = {
+    200: {
+        "description": "Успешный запрос",
         "content": {
             "application/json": {
                 "examples": {
-                    "invalid_data": {
-                        "summary": "Некорректные данные",
+                    "success_example": {
+                        "summary": "Успешный ответ",
                         "value": {
-                            "error": "Отсутствуют обязательные параметры: name, family или genus"
+                            "data": {
+                                "total_plants": 0,
+                                "total_trees": 0,
+                                "total_shrubs": 0,
+                                "shrub_types": {},
+                                "tree_types": {},
+                                "condition_status": {
+                                    1: 0,
+                                    2: 0,
+                                    3: 0
+                                }
+                            },
+                            "success": True
                         }
                     }
                 }

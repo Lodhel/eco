@@ -66,6 +66,7 @@ class DetectionResult(Base):
     bbox_norm = Column(ARRAY(Float), nullable=False)
     bbox_abs = Column(ARRAY(Float), nullable=False)
     dry_branches_percentage = Column(Float, default=0.0)
+    status = Column(Integer, default=1)
 
     order = relationship("Order", back_populates="detection_results")
 
