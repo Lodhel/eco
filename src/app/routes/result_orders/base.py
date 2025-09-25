@@ -42,11 +42,11 @@ class BaseRouter(
             if result.label == 'дерево':
                 analytics_data['total_trees'] += 1
                 plant_count = analytics_data['tree_types'].get(result.name_plant, 0)
-                analytics_data['tree_types'] = plant_count+1
+                analytics_data['tree_types'][result.name_plant] = plant_count+1
             else:
-                plant_count = analytics_data['shrub_types'].get(result.name_plant, 0)
-                analytics_data['shrub_types'] = plant_count+1
                 analytics_data['total_shrubs'] += 1
+                plant_count = analytics_data['shrub_types'].get(result.name_plant, 0)
+                analytics_data['shrub_types'][result.name_plant] = plant_count+1
 
             analytics_data['condition_status'][result.status] += 1
 
