@@ -47,7 +47,7 @@ class PersonalResultOrderRouter(BaseRouter):
             if not detection_result:
                 return self.make_response_by_error_not_exists()
 
-            plant = await self.get_plant_by_name(session, detection_result.name)
+            plant = await self.get_plant_by_name(session, detection_result.name_plant)
             if not plant:
                 return self.make_response_by_error_not_exists()
 
