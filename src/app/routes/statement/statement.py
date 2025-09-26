@@ -1,6 +1,6 @@
 import datetime
 
-from fastapi import APIRouter, Path, Depends
+from fastapi import APIRouter, Path, Depends, HTTPException
 from fastapi_utils.cbv import cbv
 from starlette.requests import Request
 from starlette.responses import Response
@@ -12,6 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from io import BytesIO
 from openpyxl import Workbook
 
+from src.app.models import Order
 from src.app.routes.statement.base import BaseRouter
 from src.app.routes.statement.create_statement import ManagerXLSX
 
@@ -42,6 +43,9 @@ class GreenPlantRouter(BaseRouter):
         )
     ):
         async with AsyncSession(self.engine, autoflush=False, expire_on_commit=False) as session:
+            if not await self.get_instance_by_id(session, Order, order_id):
+                raise HTTPException(status_code=404, detail="File not found")
+
             records = await self.get_records(session, order_id)
 
         wb: Workbook = self.manager_xlsx().create(records)
