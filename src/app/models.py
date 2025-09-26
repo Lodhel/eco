@@ -62,10 +62,9 @@ class DetectionResult(Base):
     id = Column(Integer, primary_key=True)
     order_id = Column(Integer, ForeignKey('orders.id'), nullable=False)
     label = Column(String, nullable=False)
+    season = Column(String, nullable=False, default='вегетационный')
     name_plant = Column(String, nullable=False, default='Неизвестный вид')
-    confidence = Column(Float, nullable=False)
-    bbox_norm = Column(ARRAY(Float), nullable=False)
-    bbox_abs = Column(ARRAY(Float), nullable=False)
+    bbox = Column(ARRAY(Float), nullable=False)
     dry_branches_percentage = Column(Float, default=0.0)
     status = Column(Integer, default=1)
 
@@ -77,8 +76,7 @@ class DetectionResult(Base):
             'id': self.id,
             'label': self.label,
             'name_plant': self.name_plant,
-            'confidence': self.confidence,
-            'bbox_norm': self.bbox_norm,
-            'bbox_abs': self.bbox_abs,
+            'season': self.season,
+            'bbox': self.bbox,
             'dry_branches_percentage': self.dry_branches_percentage,
         }

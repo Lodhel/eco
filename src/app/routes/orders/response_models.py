@@ -14,10 +14,11 @@ order_responses = {
                                 "created_at": "2023-09-25T12:00:00",
                                 "results": [
                                     {
+                                        "name_plant": "дуб",
+                                        "season": "вегетационный",
                                         "label": "дерево",
                                         "confidence": 0.95,
-                                        "bbox_norm": [0.2, 0.1, 0.9, 0.8],
-                                        "bbox_abs": [120, 50, 900, 700]
+                                        "bbox": [120, 50, 900, 700]
                                     }
                                 ]
                             },

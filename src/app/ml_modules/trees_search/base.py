@@ -1,57 +1,74 @@
+import os
 from pathlib import Path
 import io
 
 import torch
 from ultralytics import YOLO
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
+
+from src.app.ml_modules.trees_search.classifier import SpeciesClassifier
+from src.app.ml_modules.trees_search.detector import ObjectDetector
+from src.app.ml_modules.trees_search.seasson import SeasonClassifier
 
 
 class TreesSearcher:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    season_clf = SeasonClassifier
+    detector = ObjectDetector
+    species_clf = SpeciesClassifier
 
-    def run(self, image) -> dict:
-        model_path = self._model_path()
-        model = self.load_model(model_path)
-        results, preds = self.predict(image, model, conf_thres=0.25)
+    def run(self, image_file):
+        season_classes = ["вегетационный", "невегетационный"]
+        tree_classes = ["берёза", 'дуб', 'ель', 'клен', 'плодовое', 'сосна', 'тополь', 'ясень']
 
-        image = self.get_images_from_results(results)
+        season_clf = self.season_clf(self._model_path('period.pth'), season_classes)
+        detector = self.detector(self._model_path('trees.pt'))
+        species_clf = self.species_clf(self._model_path('classifier.pth'), tree_classes)
+
+        season_label, image = season_clf.predict(image_file)
+        detections, model = detector.detect(image.copy(), season_label)
+        predictions = []
+        for d in detections:
+            res = species_clf.classify(d["crop"], d["class"], d["season"])
+            d.update(res)
+
+            predictions.append({
+                "name": d["species"],
+                "label": d["class"],
+                "season": d["season"],
+                "bbox": d["bbox"]
+            })
+
+        image = self.predict(image, detections)
+
         return {
             'image': image,
-            'preds': preds
+            'preds': predictions
         }
 
-    @classmethod
-    def load_model(cls, model_path: str):
-        model = YOLO(model_path)
-        model.to(cls.device)
-        return model
-
     @staticmethod
-    def predict(image_data, model, conf_thres=0.30):
-        image = Image.open(io.BytesIO(image_data)).convert("RGB")
-        w, h = image.size
-        results = model(image, conf=conf_thres)
+    def predict(image, detections, font_path=None):
+        draw = ImageDraw.Draw(image)
+        if font_path and os.path.exists(font_path):
+            font = ImageFont.truetype(font_path, 20)
+        else:
+            font = ImageFont.load_default()
 
-        predictions = []
-        for result in results:
-            for box in result.boxes:
-                cls_id = int(box.cls[0])
-                conf = float(box.conf[0])
-                label = model.names[cls_id]
-                x1, y1, x2, y2 = box.xyxy[0].tolist()
+        for d in detections:
+            x1, y1, x2, y2 = d["bbox"]
+            species = d.get("species")
 
-                x1 /= w
-                x2 /= w
-                y1 /= h
-                y2 /= h
+            draw.rectangle([x1, y1, x2, y2], outline="red", width=3)
 
-                predictions.append({
-                    "label": label,
-                    "confidence": conf,
-                    "bbox_norm": [x1, y1, x2, y2],
-                    "bbox_abs": [box.xyxy[0].tolist()]
-                })
-        return results, predictions
+            if species:
+                bbox = draw.textbbox((x1, y1), species, font=font)
+                text_w, text_h = bbox[2] - bbox[0], bbox[3] - bbox[1]
+
+                text_bg = [x1, y1 - text_h - 4, x1 + text_w + 4, y1]
+                draw.rectangle(text_bg, fill="red")
+                draw.text((x1 + 2, y1 - text_h - 2), species, fill="white", font=font)
+
+        return image
 
     @staticmethod
     def get_images_from_results(results):
@@ -69,5 +86,5 @@ class TreesSearcher:
         return img_byte_arr.getvalue()
 
     @staticmethod
-    def _model_path() -> Path:
-        return Path(__file__).resolve().parent / "trees.pt"
+    def _model_path(name: str) -> Path:
+        return Path(__file__).resolve().parent / name
