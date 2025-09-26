@@ -12,7 +12,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from io import BytesIO
 from openpyxl import Workbook
 
-from src.app.routes.general_models import GeneralHeadersModel
 from src.app.routes.statement.base import BaseRouter
 from src.app.routes.statement.create_statement import ManagerXLSX
 
@@ -40,12 +39,8 @@ class GreenPlantRouter(BaseRouter):
             title="ID заявки",
             description="ID заявки",
             example="1"
-        ),
-        headers: GeneralHeadersModel = Depends()
+        )
     ):
-        if not await self.auth_service_client(headers.authorization_token):
-            return self.make_response_by_auth_error()
-
         async with AsyncSession(self.engine, autoflush=False, expire_on_commit=False) as session:
             records = await self.get_records(session, order_id)
 
