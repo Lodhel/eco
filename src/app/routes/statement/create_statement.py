@@ -9,7 +9,7 @@ class ManagerXLSX:
         self.wb = Workbook()
         self.ws = self.wb.active
 
-        self.ws.merge_cells('A1:F1')
+        self.ws.merge_cells('A1:E1')
         self.ws['A1'] = "ПЕРЕЧЕТНАЯ ВЕДОМОСТЬ ДЕРЕВЬЕВ И КУСТАРНИКОВ"
         self.ws['A1'].alignment = Alignment(horizontal='center', vertical='center')
         self.ws['A1'].font = Font(bold=True, size=14)
@@ -30,7 +30,7 @@ class ManagerXLSX:
             "№ п/п",
             "Дерево/кустарник",
             "Наименование пород",
-            "Характеристика состояния зеленых насаждений",
+            "Статус",
             "Процент сухих веток у растения"
         ]
         self.ws.append(headers)
@@ -38,7 +38,7 @@ class ManagerXLSX:
         return headers
 
     def set_styles(self, headers: list):
-        for col in range(1, len(headers)):
+        for col in range(1, len(headers)+1):
             cell = self.ws.cell(row=2, column=col)
             cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
             cell.font = Font(bold=True)
