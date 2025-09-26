@@ -1,4 +1,5 @@
 import datetime
+import io
 import os
 import uuid
 
@@ -49,8 +50,13 @@ class BaseRouter(
     async def save_annotated_image(content, filename):
         filename = filename.split('/')[-1]
         save_path = os.path.join("src/images", filename)
+
+        image_bytes = io.BytesIO()
+        content.save(image_bytes, format='JPEG')
+        image_bytes.seek(0)
+
         async with aiofiles.open(save_path, "wb") as f:
-            await f.write(content)
+            await f.write(image_bytes.read())
 
         return filename
 
