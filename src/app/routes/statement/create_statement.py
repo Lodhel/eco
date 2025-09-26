@@ -38,7 +38,7 @@ class ManagerXLSX:
         return headers
 
     def set_styles(self, headers: list):
-        for col in range(1, len(headers) + 1):
+        for col in range(1, len(headers)):
             cell = self.ws.cell(row=2, column=col)
             cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
             cell.font = Font(bold=True)
@@ -52,13 +52,13 @@ class ManagerXLSX:
             self.ws.append(row)
 
     def set_width(self):
-        col_widths = [8, 25, 15, 15, 15]
+        col_widths = [8, 25, 20, 20, 20]
         for i, width in enumerate(col_widths, start=1):
             self.ws.column_dimensions[chr(64 + i)].width = width
 
     def set_height(self):
-        self.ws.row_dimensions[1].height = 30
-        self.ws.row_dimensions[2].height = 25
+        self.ws.row_dimensions[1].height = 35
+        self.ws.row_dimensions[2].height = 30
 
     def configure_data_style_cells(self, headers: list):
         for row in self.ws.iter_rows(min_row=3, max_row=self.ws.max_row, min_col=1, max_col=len(headers)):
