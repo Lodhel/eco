@@ -1,7 +1,9 @@
+import io
 import os
 import tempfile
 
 import aiofiles.os
+from PIL import Image
 from fastapi import APIRouter, Depends, UploadFile, File, Form, Path
 from fastapi_utils.cbv import cbv
 from sqlalchemy import select, delete
@@ -80,7 +82,8 @@ class OrderRouter(BaseRouter):
         tmp.close()
 
         try:
-            result: dict = self.trees_searcher.run(content)
+            image = Image.open(io.BytesIO(content))
+            result: dict = self.trees_searcher.run(image)
         finally:
             await aiofiles.os.remove(tmp_path)
 
