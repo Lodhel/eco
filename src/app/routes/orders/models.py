@@ -21,6 +21,7 @@ class OrderResponse(BaseModel):
     title: str = Field(..., description="Название заявки")
     created_at: str = Field(..., description="Дата и время создания заявки")
     results: List[DetectionResultResponse] = Field(..., description="Результаты детекции")
+    statement: str = Field(..., description="url выгрузки перечетной ведомости")
 
     class Config:
         orm_mode = True
