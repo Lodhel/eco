@@ -33,7 +33,7 @@ class TreesSearcher:
             d.update(res)
 
             predictions.append({
-                "name": d["species"],
+                "name_plant": d["species"],
                 "label": d["class"],
                 "season": d["season"],
                 "bbox": d["bbox"]
