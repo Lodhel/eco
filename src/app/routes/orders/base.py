@@ -38,7 +38,8 @@ class BaseRouter(
                 order_id=order.id,
                 label=_['label'],
                 season=_['season'],
-                bbox=_['bbox'],
+                bbox_abs=_['bbox_abs'],
+                bbox_norm=_['bbox_norm'],
                 name_plant=_['name_plant']
             ) for _ in data
         ]

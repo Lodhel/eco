@@ -18,7 +18,8 @@ order_responses = {
                                         "season": "вегетационный",
                                         "label": "дерево",
                                         "confidence": 0.95,
-                                        "bbox": [120, 50, 900, 700]
+                                        "bbox_abs": [120, 50, 900, 700],
+                                        "bbox_norm": [0.1, 0.2, 1, 0.5]
                                     }
                                 ]
                             },

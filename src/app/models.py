@@ -64,7 +64,8 @@ class DetectionResult(Base):
     label = Column(String, nullable=False)
     season = Column(String, nullable=False, default='вегетационный')
     name_plant = Column(String, nullable=False, default='Неизвестный вид')
-    bbox = Column(ARRAY(Float), nullable=False)
+    bbox_abs = Column(ARRAY(Float), nullable=False)
+    bbox_norm = Column(ARRAY(Float), nullable=False)
     dry_branches_percentage = Column(Float, default=0.0)
     status = Column(Integer, default=1)
 
@@ -77,6 +78,7 @@ class DetectionResult(Base):
             'label': self.label,
             'name_plant': self.name_plant,
             'season': self.season,
-            'bbox': self.bbox,
+            'bbox_abs': self.bbox_abs,
+            'bbox_norm': self.bbox_norm,
             'dry_branches_percentage': self.dry_branches_percentage,
         }

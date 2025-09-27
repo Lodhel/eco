@@ -7,7 +7,8 @@ class DetectionResultResponse(BaseModel):
     label: str = Field(..., description="Метка объекта")
     name_plant: str = Field(..., description="Название объекта")
     season: str = Field(..., description="Сезон")
-    bbox: List[float] = Field(..., description="Нормализованные координаты")
+    bbox_abs: List[float] = Field(..., description="Нормализованные координаты")
+    bbox_norm: List[float] = Field(..., description="Нормализованные координаты")
     dry_branches_percentage: float = Field(..., description="Процент сухих веток у растения")
 
     class Config:
