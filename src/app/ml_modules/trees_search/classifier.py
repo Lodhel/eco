@@ -12,12 +12,18 @@ class SpeciesClassifier:
                              [0.229, 0.224, 0.225])
     ])
 
-    def __init__(self, tree_model_path, tree_classes):
+    def __init__(self, tree_model_path, tree_classes, shrub_model_path, shrub_classes):
         self.tree_model = EfficientNet.from_pretrained('efficientnet-b0')
         self.tree_model._fc = torch.nn.Linear(self.tree_model._fc.in_features, len(tree_classes))
         self.tree_model.load_state_dict(torch.load(tree_model_path, map_location=self.device))
         self.tree_model = self.tree_model.to(self.device).eval()
         self.tree_classes = tree_classes
+
+        self.shrub_model = EfficientNet.from_pretrained('efficientnet-b0')
+        self.shrub_model._fc = torch.nn.Linear(self.shrub_model._fc.in_features, len(shrub_classes))
+        self.shrub_model.load_state_dict(torch.load(shrub_model_path, map_location=self.device))
+        self.shrub_model = self.shrub_model.to(self.device).eval()
+        self.shrub_classes = shrub_classes
 
     def classify(self, crop, obj_class, season_label):
         if season_label != "вегетационный":
