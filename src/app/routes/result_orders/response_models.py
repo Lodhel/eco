@@ -39,6 +39,7 @@ result_order_responses = {
                                 "total_plants": 0,
                                 "total_trees": 0,
                                 "total_shrubs": 0,
+                                "season": "вегетационный",
                                 "shrub_types": {},
                                 "tree_types": {},
                                 "condition_status": {
