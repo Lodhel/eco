@@ -41,6 +41,7 @@ class Order(Base):
     image_path = Column(String, nullable=False)
     title = Column(String, nullable=False)
     created_at = Column(DateTime, nullable=False)
+    season = Column(String, nullable=False, default='вегетационный')
 
     detection_results = relationship("DetectionResult", back_populates="order")
 
@@ -48,6 +49,7 @@ class Order(Base):
     def data(self):
         return {
             'id': self.id,
+            'season': self.season,
             'image_path': f'{BASE_URL}api/v1/images/{self.image_path}/',
             'title': self.title,
             'created_at': self.created_at.isoformat() if self.created_at else None,

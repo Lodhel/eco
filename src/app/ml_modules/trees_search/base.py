@@ -27,7 +27,9 @@ class TreesSearcher:
         season_label, image = season_clf.predict(image_file)
         detections, model = detector.detect(image.copy(), season_label)
         predictions = []
+        season = 'вегетационный'
         for d in detections:
+            season = d["season"]
             res = species_clf.classify(d["crop"], d["class"], d["season"])
             d.update(res)
 
@@ -43,6 +45,7 @@ class TreesSearcher:
 
         return {
             'image': image,
+            'season': season,
             'preds': predictions
         }
 

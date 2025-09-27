@@ -9,6 +9,7 @@ order_responses = {
                         "value": {
                             "data": {
                                 "id": 1,
+                                "season": "вегетационный",
                                 "image_path": "sample.jpg",
                                 "title": "Заявка на определение растения",
                                 "created_at": "2023-09-25T12:00:00",

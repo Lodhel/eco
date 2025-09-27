@@ -94,6 +94,7 @@ class OrderRouter(BaseRouter):
             session.add(order)
             await session.flush()
             await self.create_detection_results(session, order, result['preds'])
+            order.season = result['season']
             await session.commit()
 
             data: dict = await self.get_data_by_response(session, order)
