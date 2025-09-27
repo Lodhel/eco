@@ -36,7 +36,8 @@ class TreesSearcher:
                 "name_plant": d["species"],
                 "label": d["class"],
                 "season": d["season"],
-                "bbox": d["bbox"]
+                "bbox_abs": d["bbox_abs"],
+                "bbox_norm": d["bbox_norm"]
             })
 
         image = self.predict(image, detections)
