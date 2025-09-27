@@ -48,6 +48,7 @@ class ResultOrderRouter(BaseRouter):
                 return self.make_response_by_error_not_exists()
 
             data = await self.make_analytics_data(session, order.id)
+            data['season'] = order.season
             return self.get_data(data)
 
 
