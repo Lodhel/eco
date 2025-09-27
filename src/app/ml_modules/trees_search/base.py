@@ -3,7 +3,6 @@ from pathlib import Path
 import io
 
 import torch
-from ultralytics import YOLO
 from PIL import Image, ImageDraw, ImageFont
 
 from src.app.ml_modules.trees_search.classifier import SpeciesClassifier
@@ -56,7 +55,7 @@ class TreesSearcher:
             font = ImageFont.load_default()
 
         for d in detections:
-            x1, y1, x2, y2 = d["bbox"]
+            x1, y1, x2, y2 = d["bbox_abs"]
             species = d.get("species")
 
             draw.rectangle([x1, y1, x2, y2], outline="red", width=3)
