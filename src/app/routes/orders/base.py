@@ -8,7 +8,7 @@ from sqlalchemy import select, asc, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from src.app.models import Order, DetectionResult
+from src.app.models import Order, DetectionResult, Plant
 from src.app.orm_sender.manager_sqlalchemy import ManagerSQLAlchemy
 from src.app.routes.base.general_routes import GeneralBaseRouter
 from src.app.routes.mixins import MainRouterMIXIN, APIAuthMIXIN, AbstractInstanceRouterMIXIN
@@ -64,6 +64,32 @@ class BaseRouter(
     @classmethod
     async def get_data_by_response_created(cls, session: AsyncSession, order: Order):
         return await cls.get_data_by_response(session, order)
+
+    @staticmethod
+    async def get_tree_classes(session: AsyncSession):
+        result = await session.execute(
+            select(
+                Plant
+            ).where(
+                Plant.plant_type == 'дерево'
+            )
+        )
+        return [
+            _.name for _ in result.scalars().all()
+        ]
+
+    @staticmethod
+    async def get_shrub_classes(session: AsyncSession):
+        result = await session.execute(
+            select(
+                Plant
+            ).where(
+                Plant.plant_type == 'кустарник'
+            )
+        )
+        return [
+            _.name for _ in result.scalars().all()
+        ]
 
     @staticmethod
     async def get_data_by_response(session: AsyncSession, order: Order) -> dict:

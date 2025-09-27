@@ -74,6 +74,10 @@ class OrderRouter(BaseRouter):
         if not await self.auth_service_client(headers.authorization_token):
             return self.make_response_by_auth_error()
 
+        async with AsyncSession(self.engine, autoflush=False, expire_on_commit=False) as session:
+            tree_classes = await self.get_tree_classes(session)
+            shrub_classes = await self.get_shrub_classes(session)
+
         content = await file.read()
         suffix = os.path.splitext(file.filename)[1]
 
@@ -83,7 +87,7 @@ class OrderRouter(BaseRouter):
 
         try:
             image = Image.open(io.BytesIO(content))
-            result: dict = self.trees_searcher.run(image)
+            result: dict = self.trees_searcher.run(image, tree_classes, shrub_classes)
         finally:
             await aiofiles.os.remove(tmp_path)
 

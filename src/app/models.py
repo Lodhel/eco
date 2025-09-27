@@ -19,6 +19,7 @@ class Plant(Base):
     height = Column(String, nullable=True)
     class_type = Column(String, nullable=True)
     has_fruits = Column(Boolean, default=False)
+    plant_type = Column(String, nullable=False, default='дерево')
 
     @property
     def data(self):
