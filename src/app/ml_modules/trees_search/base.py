@@ -16,16 +16,14 @@ class TreesSearcher:
     detector = ObjectDetector
     species_clf = SpeciesClassifier
 
-    def run(self, image_file, tree_classes, shrub_classes):
+    def run(self, image_file):
         season_classes = ["вегетационный", "невегетационный"]
 
         season_clf = self.season_clf(self._model_path('period.pth'), season_classes)
         detector = self.detector(self._model_path('yolo_detector.pt'))
         species_clf = self.species_clf(
             self._model_path('classifier_trees.pth'),
-            tree_classes,
-            self._model_path('classifier_shrubs.pth'),
-            shrub_classes
+            self._model_path('classifier_shrubs.pth')
         )
 
         season_label, image = season_clf.predict(image_file)
