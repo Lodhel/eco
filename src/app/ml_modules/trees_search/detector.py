@@ -7,7 +7,7 @@ class ObjectDetector:
     def __init__(self, model_path):
         self.model = YOLO(model_path)
 
-    def detect(self, image, season_label, save_crops=True, crop_dir="crops"):
+    def detect(self, image, season_label, save_crops=False, crop_dir="crops"):
         results = self.model.predict(image)
         outputs = []
         img_w, img_h = image.size
