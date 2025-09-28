@@ -26,10 +26,10 @@ class BaseRouter(
         results = stmt.scalars().all()
         return [
             [
-                result.id,
+                _+1,
                 result.label,
                 result.name_plant,
                 condition_status.get(result.status, 'Удовлетворительно'),
                 result.dry_branches_percentage,
-            ] for result in results
+            ] for _, result in enumerate(results)
         ]
