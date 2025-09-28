@@ -96,4 +96,5 @@ class PersonalResultOrderRouter(BaseRouter):
 
             data: dict = await self.get_data_by_response_created(session, plant)
             data['dry_branches_percentage'] = detection_result.dry_branches_percentage
+            data['status'] = detection_result.status
             return self.get_data(data)

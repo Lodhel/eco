@@ -16,7 +16,8 @@ result_orders_responses = {
                                 "height": None,
                                 "class_type": "Листопадное",
                                 "has_fruits": False,
-                                "dry_branches_percentage": 30.33
+                                "dry_branches_percentage": 30.33,
+                                "status": 1
                             },
                             "success": True
                         }
