@@ -1,5 +1,6 @@
 import torch
 from efficientnet_pytorch import EfficientNet
+from loguru import logger
 from torchvision import transforms
 
 from src.app.ml_modules.trees_search.plant_classes.tree_classes import TREE_CLASSES
@@ -18,7 +19,7 @@ class SpeciesClassifier:
 
     tree_classes = TREE_CLASSES
     shrub_classes = SHRUB_CLASSES
-    conf_threshold = 0.5
+    conf_threshold = 0.4
 
     def __init__(self, tree_model_path, shrub_model_path):
 
@@ -43,6 +44,7 @@ class SpeciesClassifier:
                 probs = torch.nn.functional.softmax(out, dim=1)
                 conf, pred = torch.max(probs, 1)
                 if conf.item() < self.conf_threshold:
+                    logger.info('Неизвестный вид')
                     return {"species": "Неизвестный вид", "confidence": conf.item()}
                 return {"species": self.tree_classes[pred.item()], "confidence": conf.item()}
 
@@ -51,6 +53,7 @@ class SpeciesClassifier:
                 probs = torch.nn.functional.softmax(out, dim=1)
                 conf, pred = torch.max(probs, 1)
                 if conf.item() < self.conf_threshold:
+                    logger.info('Неизвестный вид')
                     return {"species": "Неизвестный вид", "confidence": conf.item()}
                 return {"species": self.shrub_classes[pred.item()], "confidence": conf.item()}
 
