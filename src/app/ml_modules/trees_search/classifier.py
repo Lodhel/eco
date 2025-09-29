@@ -1,6 +1,5 @@
 import torch
 from efficientnet_pytorch import EfficientNet
-from loguru import logger
 from torchvision import transforms
 
 from src.app.ml_modules.trees_search.plant_classes.tree_classes import TREE_CLASSES
@@ -8,7 +7,6 @@ from src.app.ml_modules.trees_search.plant_classes.shrub_classes import SHRUB_CL
 
 
 class SpeciesClassifier:
-
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     transform = transforms.Compose([
         transforms.Resize((224, 224)),
@@ -19,10 +17,8 @@ class SpeciesClassifier:
 
     tree_classes = TREE_CLASSES
     shrub_classes = SHRUB_CLASSES
-    conf_threshold = 0.2
 
     def __init__(self, tree_model_path, shrub_model_path):
-
         self.tree_model = EfficientNet.from_pretrained('efficientnet-b0')
         self.tree_model._fc = torch.nn.Linear(self.tree_model._fc.in_features, len(self.tree_classes))
         self.tree_model.load_state_dict(torch.load(tree_model_path, map_location=self.device))
@@ -41,17 +37,11 @@ class SpeciesClassifier:
         with torch.no_grad():
             if obj_class == "дерево":
                 out = self.tree_model(tensor)
-                probs = torch.nn.functional.softmax(out, dim=1)
-                conf, pred = torch.max(probs, 1)
-                return {"species": self.tree_classes[pred.item()], "confidence": conf.item()}
-
+                _, pred = torch.max(out, 1)
+                return {"species": self.tree_classes[pred.item()]}
             elif obj_class == "кустарник":
                 out = self.shrub_model(tensor)
-                probs = torch.nn.functional.softmax(out, dim=1)
-                conf, pred = torch.max(probs, 1)
-                if conf.item() < self.conf_threshold:
-                    return {"species": "Неизвестный вид", "confidence": conf.item()}
-                return {"species": self.shrub_classes[pred.item()], "confidence": conf.item()}
-
+                _, pred = torch.max(out, 1)
+                return {"species": self.shrub_classes[pred.item()]}
             else:
-                return {"species": None, "skip_reason": "не определено"}
+                return {"species": None, "skip_reason": "неизвестный класс"}
