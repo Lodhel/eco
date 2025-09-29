@@ -43,9 +43,6 @@ class SpeciesClassifier:
                 out = self.tree_model(tensor)
                 probs = torch.nn.functional.softmax(out, dim=1)
                 conf, pred = torch.max(probs, 1)
-                if conf.item() < self.conf_threshold:
-                    logger.info('Неизвестный вид')
-                    return {"species": "Неизвестный вид", "confidence": conf.item()}
                 return {"species": self.tree_classes[pred.item()], "confidence": conf.item()}
 
             elif obj_class == "кустарник":
