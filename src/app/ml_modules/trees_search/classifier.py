@@ -19,7 +19,7 @@ class SpeciesClassifier:
 
     tree_classes = TREE_CLASSES
     shrub_classes = SHRUB_CLASSES
-    conf_threshold = 0.4
+    conf_threshold = 0.2
 
     def __init__(self, tree_model_path, shrub_model_path):
 
@@ -50,7 +50,6 @@ class SpeciesClassifier:
                 probs = torch.nn.functional.softmax(out, dim=1)
                 conf, pred = torch.max(probs, 1)
                 if conf.item() < self.conf_threshold:
-                    logger.info('Неизвестный вид')
                     return {"species": "Неизвестный вид", "confidence": conf.item()}
                 return {"species": self.shrub_classes[pred.item()], "confidence": conf.item()}
 
