@@ -48,11 +48,10 @@ class ManagerXLSX:
                 top=Side(style='thin'), bottom=Side(style='thin')
             )
 
-            self.ws.row_dimensions[col].height = 35
-
     def add_data(self, data: list):
-        for row in data:
+        for _, row in enumerate(data):
             self.ws.append(row)
+            self.ws.row_dimensions[_+2].height = 35
 
     def set_width(self):
         col_widths = [8, 25, 20, 20, 20, 35]
