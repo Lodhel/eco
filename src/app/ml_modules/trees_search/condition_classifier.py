@@ -15,10 +15,9 @@ class TreeConditionClassifier:
                              [0.229, 0.224, 0.225])
     ])
     condition_classes = TREE_CONDITION_CLASSES
+    threshold = 0.8
 
-    def __init__(self, model_path, threshold=0.5):
-        self.threshold = threshold
-
+    def __init__(self, model_path):
         weights = EfficientNet_B0_Weights.IMAGENET1K_V1
         self.model = efficientnet_b0(weights=weights)
 

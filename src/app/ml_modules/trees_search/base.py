@@ -16,7 +16,7 @@ class TreesSearcher:
     season_clf = SeasonClassifier
     detector = ObjectDetector
     species_clf = SpeciesClassifier
-    # condition_clf = TreeConditionClassifier
+    condition_clf = TreeConditionClassifier
 
     def run(self, image_file):
         season_classes = ["вегетационный", "невегетационный"]
@@ -27,9 +27,9 @@ class TreesSearcher:
             self._model_path('classifier_trees.pth'),
             self._model_path('classifier_shrubs.pth')
         )
-        # condition_clf = self.condition_clf(
-        #     self._model_path('condition_classifier.pth')
-        # )
+        condition_clf = self.condition_clf(
+            self._model_path('condition_classifier.pth')
+        )
 
         season_label, image = season_clf.predict(image_file)
         detections, model = detector.detect(image.copy(), season_label)
@@ -40,9 +40,9 @@ class TreesSearcher:
             res = species_clf.classify(d["crop"], d["class"], d["season"])
             d.update(res)
             cond_res = []
-            # if d["class"] == "дерево":
-            #     cond_res = condition_clf.classify(d["crop"])
-            #     d["conditions"] = cond_res
+            if d["class"] == "дерево":
+                cond_res = condition_clf.classify(d["crop"])
+                d["conditions"] = cond_res
 
             predictions.append({
                 "name_plant": d["species"],
