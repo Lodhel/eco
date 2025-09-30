@@ -1,7 +1,7 @@
 import torch
 from torchvision import transforms
 import torch.nn as nn
-from torchvision import models
+from torchvision.models import efficientnet_b0, EfficientNet_B0_Weights
 
 from src.app.ml_modules.trees_search.condition_classes.tree_classes import TREE_CONDITION_CLASSES
 
@@ -19,7 +19,9 @@ class TreeConditionClassifier:
     def __init__(self, model_path, threshold=0.5):
         self.threshold = threshold
 
-        self.model = models.efficientnet_b0(pretrained=True)
+        weights = EfficientNet_B0_Weights.IMAGENET1K_V1
+        self.model = efficientnet_b0(weights=weights)
+
         in_features = self.model.classifier[1].in_features
         self.model.classifier[1] = nn.Linear(in_features, len(self.condition_classes))
 
