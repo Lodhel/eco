@@ -40,12 +40,23 @@ class BaseRouter(
                 season=_['season'],
                 bbox_abs=_['bbox_abs'],
                 bbox_norm=_['bbox_norm'],
-                name_plant=_['name_plant']
+                name_plant=_['name_plant'],
+                status=cls.make_detection_status(_['cond_res']),
+                cond_res=_['cond_res']
             ) for _ in data
         ]
 
         session.add_all(results)
         await session.flush()
+
+    @staticmethod
+    def make_detection_status(cond_res: list):
+        if cond_res:
+            if len(cond_res) > 2:
+                return 3
+            else:
+                return 2
+        return 1
 
     @staticmethod
     async def save_annotated_image(content, filename):

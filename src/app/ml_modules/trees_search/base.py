@@ -6,6 +6,7 @@ import torch
 from PIL import Image, ImageDraw, ImageFont
 
 from src.app.ml_modules.trees_search.classifier import SpeciesClassifier
+from src.app.ml_modules.trees_search.condition_classifier import TreeConditionClassifier
 from src.app.ml_modules.trees_search.detector import ObjectDetector
 from src.app.ml_modules.trees_search.seasson import SeasonClassifier
 
@@ -15,6 +16,7 @@ class TreesSearcher:
     season_clf = SeasonClassifier
     detector = ObjectDetector
     species_clf = SpeciesClassifier
+    condition_clf = TreeConditionClassifier
 
     def run(self, image_file):
         season_classes = ["вегетационный", "невегетационный"]
@@ -25,6 +27,9 @@ class TreesSearcher:
             self._model_path('classifier_trees.pth'),
             self._model_path('classifier_shrubs.pth')
         )
+        condition_clf = self.condition_clf(
+            self._model_path('condition_classifier.pth')
+        )
 
         season_label, image = season_clf.predict(image_file)
         detections, model = detector.detect(image.copy(), season_label)
@@ -34,13 +39,18 @@ class TreesSearcher:
             season = d["season"]
             res = species_clf.classify(d["crop"], d["class"], d["season"])
             d.update(res)
+            cond_res = []
+            if d["class"] == "дерево":
+                cond_res = condition_clf.classify(d["crop"])
+                d["conditions"] = cond_res
 
             predictions.append({
                 "name_plant": d["species"],
                 "label": d["class"],
                 "season": d["season"],
                 "bbox_abs": d["bbox_abs"],
-                "bbox_norm": d["bbox_norm"]
+                "bbox_norm": d["bbox_norm"],
+                "cond_res": cond_res
             })
 
         image = self.predict(image, detections)

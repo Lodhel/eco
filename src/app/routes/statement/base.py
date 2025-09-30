@@ -31,5 +31,6 @@ class BaseRouter(
                 result.name_plant,
                 condition_status.get(result.status, 'Удовлетворительно'),
                 result.dry_branches_percentage,
+                ', '.join(map(str, result.cond_res)) if result.cond_res else '',
             ] for _, result in enumerate(results)
         ]

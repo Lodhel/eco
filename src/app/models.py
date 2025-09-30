@@ -71,6 +71,7 @@ class DetectionResult(Base):
     bbox_norm = Column(ARRAY(Float), nullable=False)
     dry_branches_percentage = Column(Float, default=0.0)
     status = Column(Integer, default=1)
+    cond_res = Column(ARRAY(String), nullable=True)
 
     order = relationship("Order", back_populates="detection_results")
 
@@ -84,4 +85,5 @@ class DetectionResult(Base):
             'bbox_abs': self.bbox_abs,
             'bbox_norm': self.bbox_norm,
             'dry_branches_percentage': self.dry_branches_percentage,
+            'cond_res': ', '.join(map(str, self.cond_res)) if self.cond_res else ''
         }
