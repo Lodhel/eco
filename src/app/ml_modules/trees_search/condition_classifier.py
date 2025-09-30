@@ -34,8 +34,5 @@ class TreeConditionClassifier:
 
         results = {}
         for cls, p in zip(self.condition_classes, probs):
-            if cls == "плодовые тела":
-                results[cls] = None
-            else:
-                results[cls] = 1 if p >= self.threshold else 0
+            results[cls] = 1 if p >= self.threshold else 0
         return results
